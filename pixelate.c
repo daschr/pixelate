@@ -38,7 +38,7 @@ int main(int ac, char *as[]) {
 int pixelate(const char *infile, const char *outfile, double scale, int quality) {
     VipsImage *inp=NULL, *midp=NULL, *outp=NULL;
 
-    if((inp=vips_image_new_from_file(infile, "memory", TRUE, NULL)) == NULL) {
+    if((inp=vips_image_new_from_file(infile, "access",  VIPS_ACCESS_SEQUENTIAL, NULL)) == NULL) {
         fprintf(stderr, "Error while loading file \"%s\"!\n", infile);
         goto fail;
     }
