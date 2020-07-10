@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>pixelate gallery</title>
+<style>
+body {
+  background-color: rgb(0, 13, 26);
+}
+
+div.gallery img {
+  width: 100%;
+  border: 2px solid #ccc;
+  height: auto;
+}
+
+div.gallery img:hover {
+  border: 2px solid #777;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.responsive {
+  padding: 6px 6px;
+  float: left;
+  width: 24.99999%;
+  z-index: -10;
+}
+
+@media only screen and (max-width: 700px) {
+  .responsive {
+    width: 49.99999%;
+    margin: 6px 0;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .responsive {
+    width: 100%;
+  }
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.display-box {
+  position: fixed;
+  height: 100%;
+  width: 100%;  
+  display: none;
+  z-index: 10;
+  top: 0px;
+  left: 0px;
+  background-color: rgb(0, 13, 26);
+}
+
+#expandedImg {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+}  
+
+.closebtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
+
+.leftbtn {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
+
+.rightbtn {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
+
+.about {
+	position: fixed;
+	bottom: 0px;
+	right: 0px;
+	height: 21px;
+	width: 100%;
+	font-size: 18px;
+	color: white;
+	background-color: rgb(0, 13, 26);
+}
+
+</style>
+<script>
+var lookup={{{lookup}}};
+var images={{{images}}};
+
+function show(imgs) {
+  var expandImg = document.getElementById("expandedImg");
+  expandImg.src = imgs.src;
+  expandImg.alt = imgs.alt;
+  expandImg.parentElement.style.display = "flex";
+}
+
+function left() {
+  	var expandImg = document.getElementById("expandedImg");
+	if(expandImg.parentElement.style.display == "none") return;
+	var pos=lookup.indexOf(expandImg.alt);
+	if(pos == 0) return;
+	--pos;
+	expandImg.src=images[pos].url;
+	expandImg.alt=images[pos].name;
+}
+
+function right() {
+    var expandImg = document.getElementById("expandedImg");
+	if(expandImg.parentElement.style.display == "none") return;
+	var pos=lookup.indexOf(expandImg.alt);
+	if(pos == lookup.length-1) return;
+	++pos;
+	expandImg.src=images[pos].url;
+	expandImg.alt=images[pos].name;
+}
+
+function event_listener(e){
+	if(e.keyCode == 39)
+		right();
+	else if(e.keyCode == 37)	
+		left();
+	else if(e.keyCode == 27){ //esc
+		document.getElementById("expandedImg").parentElement.style.display="none";
+	}	
+}
+
+document.addEventListener("keyup", event_listener, false);
+</script>
+</head>
+<body>
+
+<div class="about">
+<center>
+generated with <a href="https://github.com/daschr/pixelate">pixelate</a>, all images are from <a href="https://unsplash.com">unsplash</a>
+</center>
+</div>
+
+{{#images}}
+<div class="responsive">
+  <div class="gallery">
+		<img src="{{url}}" loading="lazy" alt="{{name}}" onclick="show(this);">
+  </div>
+</div>
+{{/images}}
+
+<div class="clearfix"></div>
+
+<div class="display-box">
+  <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+  <span onclick="right();" class="rightbtn">&gt;</span>
+  <span onclick="left();" class="leftbtn">&lt;</span>
+
+  <img id="expandedImg">
+</div>
+
+</body>
+</html>
+
