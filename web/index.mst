@@ -147,7 +147,7 @@ function event_listener(e){
 	}	
 }
 
-document.addEventListener("keyup", event_listener, false);
+document.addEventListener("keydown", event_listener, false);
 </script>
 </head>
 <body>
@@ -155,6 +155,7 @@ document.addEventListener("keyup", event_listener, false);
 <div class="about">
 <center>
 generated with <a href="https://github.com/daschr/pixelate">pixelate</a>, all images are from <a href="https://unsplash.com">unsplash</a>
+| Privacy: log goes to /dev/null
 </center>
 </div>
 
