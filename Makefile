@@ -1,4 +1,4 @@
-FLAGS=-pedantic -Wall
+FLAGS=-pedantic -Wall $(shell pkg-config --cflags glib-2.0)
 LIBS=$(shell pkg-config vips --cflags --libs)
 LIBS+=$(shell pkg-config --libs imagequant)
 
