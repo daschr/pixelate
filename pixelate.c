@@ -12,10 +12,18 @@ int main(int ac, char *as[]) {
     }
     double scale=0.2;
     int quality=24;
-    if(ac>3)
-        sscanf(as[3], "%lf", &scale);
-    if(ac>4)
-        sscanf(as[4], "%d", &quality);
+    if(ac>3) {
+        if(sscanf(as[3], "%lf", &scale) != 1) {
+            fprintf(stderr, "Error: %s is not a floating point number!\n", as[3]);
+            return EXIT_FAILURE;
+        }
+    }
+    if(ac>4) {
+        if(sscanf(as[4], "%d", &quality) != 1) {
+            fprintf(stderr, "Error: %s is not a number!\n", as[4]);
+            return EXIT_FAILURE;
+        }
+    }
 
 
     if(VIPS_INIT(as[0]))
