@@ -1,20 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include <vips/vips.h>
 
-int pixelate(const char *, const char *, double, int);
+int pixelate(const char *infile, const char *outfile, uint64_t height, int quality);
 
 int main(int ac, char *as[]) {
     if(ac<3) {
-        fprintf(stderr, "Usage: %s [infile] [outfile] [?scale] [?quality]\n", as[0]);
+        fprintf(stderr, "Usage: %s [infile] [outfile] [?height] [?quality]\n", as[0]);
         return EXIT_FAILURE;
     }
-    double scale=0.2;
+    uint64_t height=216;
     int quality=24;
     if(ac>3) {
-        if(sscanf(as[3], "%lf", &scale) != 1) {
-            fprintf(stderr, "Error: %s is not a floating point number!\n", as[3]);
+        if(sscanf(as[3], "%lu", &height) != 1) {
+            fprintf(stderr, "Error: %s is not a not a number!\n", as[3]);
             return EXIT_FAILURE;
         }
     }
@@ -35,7 +36,7 @@ int main(int ac, char *as[]) {
         vips_cache_set_dump(TRUE);
     */
 
-    if(!pixelate(as[1], as[2], scale, quality))
+    if(!pixelate(as[1], as[2], height, quality))
         vips_error_exit(NULL);
 
     vips_shutdown();
@@ -43,7 +44,7 @@ int main(int ac, char *as[]) {
 }
 
 
-int pixelate(const char *infile, const char *outfile, double scale, int quality) {
+int pixelate(const char *infile, const char *outfile, uint64_t height, int quality) {
     VipsImage *inp=NULL, *midp=NULL, *outp=NULL;
 
     if((inp=vips_image_new_from_file(infile, "access",  VIPS_ACCESS_SEQUENTIAL, NULL)) == NULL) {
@@ -51,6 +52,7 @@ int pixelate(const char *infile, const char *outfile, double scale, int quality)
         goto fail;
     }
 
+    double scale=(double) height / (double) vips_image_get_height(inp);
     if(vips_resize(inp, &midp, scale, "kernel", VIPS_KERNEL_NEAREST, NULL)) {
         fprintf(stderr, "Error while scaling out!\n");
         goto fail;
